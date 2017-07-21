@@ -97,5 +97,5 @@ optional arguments:
   -reads      Display articles with the most read on top.
   -authors    Display popular authors, those with the most article reads on
               top.
-  -errors     Display dates where more than 1% of requests where errors.
+  -errors     Display dates where more than 1% of requests were errors.
 ```

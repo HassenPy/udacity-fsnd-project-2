@@ -24,7 +24,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "-errors",
-    help="Display dates where more than 1%% of requests where errors.",
+    help="Display dates where more than 1%% of requests were errors.",
     action='store_true',
 )
 
