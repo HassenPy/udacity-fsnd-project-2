@@ -1,6 +1,7 @@
 command:
   python3 analyzelog.py -reads
 output:
+  Top 3 popular articles:
   Candidate is jerk, alleges rival — 338647 views
   Bears love berries, alleges bear — 253801 views
   Bad things gone, say good people — 170098 views
@@ -8,6 +9,7 @@ output:
 command:
   python3 analyzelog.py -authors
 output:
+  All time popular authors:
   Ursula La Multa — 507594 views
   Rudolf von Treppenwitz — 423457 views
   Anonymous Contributor — 170098 views
@@ -16,4 +18,5 @@ output:
 command:
   python3 analyzelog.py -errors
 output:
+  Days where the errors exceeded 1% of total requests:
   2016-07-17 — 2.3%
