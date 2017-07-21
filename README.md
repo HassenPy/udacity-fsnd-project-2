@@ -9,17 +9,33 @@ file  | Description
 `output.txt` | The output for each command from the `analyzelog.py` script
 
 ## Usage  
+#### Download and setup the VM:  
+```
+git clone https://github.com/udacity/fullstack-nanodegree-vm  
+cd fullstack-nanodegree-vm/vagrant/  
+vagrant up
+vagrant ssh
+# Now clone this repo
+git clone https://github.com/HassenPy/udacity-fsnd-project-2
+# Dump the newsdata.sql file into your news database:  
+unzip data.zip
+psql -d news -f newsdata.sql
+```  
+
 #### Database setup:  
-You must create the following views in your news database.
+You must create the following views in your news database:
+`psql -d news -f views.sql`
+
 ```
 CREATE VIEW most_popular AS (
   SELECT authors.name,
          count(ip) AS total_views
-  FROM authors, articles
+  FROM articles
   JOIN log
-  ON (path = CONCAT('/article/', articles.slug))
-  GROUP BY authors.name, authors.id, articles.author
-  HAVING (authors.id = articles.author)
+  ON path = CONCAT('/article/', articles.slug)
+  JOIN authors
+  ON authors.id = articles.author
+  GROUP BY authors.name
   ORDER BY total_views DESC
 );
 ```
@@ -33,17 +49,17 @@ CREATE VIEW most_read AS (
   FROM articles
   JOIN log
   ON (path = CONCAT('/article/', articles.slug))
-  GROUP BY title, path
-  HAVING (path LIKE '/article/%')
+  GROUP BY title
   ORDER BY views DESC
   LIMIT 3
 );
 ```
+
 ```
 CREATE VIEW most_error_days AS (
   SELECT count_date, round(percentage, 1) FROM
     (SELECT visits.visit_date as count_date,
-      /* casting integers to real and calculating error percentage
+      /* casting integers to numeric and calculating error percentage
          formula: (errors / (errors + hits) ) * 100
          https://www.postgresql.org/docs/9.5/static/typeconv-oper.html
       */
@@ -60,8 +76,8 @@ CREATE VIEW most_error_days AS (
           */
           SELECT count(path) AS visits_total, CAST(time AS DATE) as visit_date
           FROM log
-          GROUP BY visit_date, status
-          HAVING status = '200 OK'
+          WHERE status = '200 OK'
+          GROUP BY visit_date
         ) visits,
         (
           /* The errors table
@@ -69,8 +85,8 @@ CREATE VIEW most_error_days AS (
           */
           SELECT count(path) AS errors_total, CAST(time AS DATE) as error_date
           FROM log
-          GROUP BY error_date, status
-          HAVING status = '404 NOT FOUND'
+          WHERE status = '404 NOT FOUND'
+          GROUP BY error_date
         ) errors
 
     WHERE (visits.visit_date = errors.error_date)
@@ -79,6 +95,7 @@ CREATE VIEW most_error_days AS (
   WHERE (percentage > 1.0)
 );
 ```
+
 
 #### Running the script:
 The only dependency to the script is the pyscopg2 library:  
