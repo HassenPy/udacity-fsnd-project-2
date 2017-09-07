@@ -32,7 +32,7 @@ def most_popular_authors():
     """Display the most popular authors."""
     authors = query_db("SELECT * FROM most_popular;")
 
-    print("All time popular authors:")
+    print("\nAll time popular authors:")
     for author, views in authors:
         print(u"%s — %d views" % (author, views))
 
@@ -41,7 +41,7 @@ def most_error_days():
     """Display the days where errors were more than 1%% of total requests."""
     days = query_db("SELECT * FROM most_error_days;")
 
-    print("Days where the errors exceeded 1% of total requests:")
+    print("\nDays where the errors exceeded 1% of total requests:")
     for day, percentage in days:
         # %.1f%%: %.1f designates a 1 decimal place float.
         #         %% is percentage escape.
@@ -77,9 +77,9 @@ def analyze():
     args = parser.parse_args()
     if args.reads:
         most_read_articles()
-    elif args.authors:
+    if args.authors:
         most_popular_authors()
-    elif args.errors:
+    if args.errors:
         most_error_days()
     else:
         parser.error("Please specify an argument :/")
